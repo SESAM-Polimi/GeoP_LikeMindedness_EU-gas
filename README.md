@@ -1,5 +1,6 @@
-# Geopolitical Like-mindedness
-# Application to EU potential gas suppliers
+# Assess Like-Mindedness among 2 countries/regions
+
+### Application to EU potential gas suppliers.
 
 This repository allows to reproduce the calculations underlying the findings of the paper "Geopolitical indicator to measure “like-mindedness” in energy partners choice and diversification to substitute Russian gas".
 
