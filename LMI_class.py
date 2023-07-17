@@ -9,6 +9,7 @@ import pandas as pd
 import country_converter as coco
 import statistics
 import copy
+import plotly.express as px
 
 _acceptable_means = ["mean","fmean","geometric_mean","harmonic_mean"]
 _score_column = ['Overall score']
@@ -135,6 +136,8 @@ class LMI():
         self.LMI_matrix.columns = list(self.LMI.keys())    
         
         
+        
+        
 #%%
 geop_LMI = LMI()
 
@@ -153,8 +156,10 @@ geop_LMI.calc_LMI('EU27')
 # geop_LMI.add_indicators_template(r"additional_data\gas_data.xlsx",sheet_name='gas_data')
 geop_LMI.get_add_indicators(r"additional_data\gas_data.xlsx",sheet_name='gas_data')
 
+
 #%% defining other countries clusters
 gas_producers = list(geop_LMI.additional_indicators.query("`Total gas production, 2021, bcm [EIA]`!=0").index)
+gas_producers_iso = coco.convert(names=gas_producers, to='ISO3')
 
 EU_pot_suppliers = []
 for country in gas_producers:
@@ -173,23 +178,84 @@ for country in gas_producers:
         EU_pot_suppliers += [country]
         
 EU_pot_suppliers = sorted(list(set(EU_pot_suppliers)))
+EU_pot_suppliers_iso = coco.convert(names=EU_pot_suppliers, to='ISO3')
+for x in geop_LMI.regions['EU27']:
+    if x in EU_pot_suppliers_iso:
+        EU_pot_suppliers_iso.remove(x)
 
 other_suppliers = []
-for country in gas_producers:
-    if country not in EU_pot_suppliers:
+for country in gas_producers_iso:
+    if country not in EU_pot_suppliers_iso and country not in geop_LMI.regions['EU27']:
         other_suppliers+=[country]    
 
-row = []
+row = copy.deepcopy(geop_LMI.countries)
+to_remove = []
 for country in geop_LMI.countries:
-    if country not in other_suppliers and country not in geop_LMI.regions['EU27'] and country not in EU_pot_suppliers:
-        row += [country]
+    if country in geop_LMI.regions['EU27']:
+        to_remove += [country]
+    if country in gas_producers_iso:
+        to_remove += [country]
+    if country in other_suppliers:
+        to_remove += [country]
+    if country in EU_pot_suppliers_iso:
+        to_remove += [country]
 
+to_remove = sorted(list(set(to_remove)))
+for x in to_remove:
+    row.remove(x)
+    
+        
 #%%
 geop_LMI.rename_countries(method='ISO3')
-geop_LMI.add_region('EU27 potential<br>gas suppliers',find_countries=False, countries_list=coco.convert(names=EU_pot_suppliers, to='ISO3'))
-geop_LMI.add_region('Other gas<br>suppliers',find_countries=False, countries_list=coco.convert(names=other_suppliers, to='ISO3'))
-geop_LMI.add_region('Rest of<br>the World',find_countries=False, countries_list=coco.convert(names=row, to='ISO3'))
+geop_LMI.add_region('EU27 potential<br>gas suppliers',find_countries=False, countries_list=EU_pot_suppliers_iso)
+geop_LMI.add_region('Other gas<br>suppliers',find_countries=False, countries_list=other_suppliers)
+geop_LMI.add_region('Rest of<br>the World',find_countries=False, countries_list=row)
 geop_LMI.add_region('World',find_countries=False, countries_list=geop_LMI.countries)
+
+#%%
+g = copy.deepcopy(geop_LMI.g).loc[geop_LMI.countries,:]
+g.index.names = ['Country']
+g.reset_index(inplace=True)
+
+regions = {}
+for country in geop_LMI.countries:
+    for reg in geop_LMI.regions:
+        if reg!='World':
+            if country in geop_LMI.regions[reg]:
+                regions[country] = reg
+
+
+for region in geop_LMI.regions:
+    if region != 'World':
+        g['Region'] = g['Country'].map(regions)
+
+g = g.sort_values('Region')
+
+
+boxplot = px.box(
+    g,
+    x=_score_column[0],
+    y='Region', 
+    color_discrete_map={
+        "EU27": "#3a86ff",
+        "EU27 potential<br>gas suppliers": "#ff006e",
+        'Other gas<br>suppliers': "#4cc9f0",
+        "Rest of<br>the World": "#8338ec"
+        },
+    color='Region',
+    points='all', 
+    hover_data=['Country',_score_column[0]],
+    template='seaborn', 
+    )
+boxplot.update_layout(
+    font_size=16, 
+    font_family='HelveticaNeue Light',
+)
+boxplot.update_yaxes(title='')
+boxplot.update_xaxes(title='g',)
+    
+boxplot.write_html(r"plots\Figure 2.html",auto_open=True)
+
 
 
 
