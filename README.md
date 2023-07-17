@@ -4,7 +4,7 @@ This repository allows to reproduce the calculations underlying the findings of 
 
 In the "LMI_class.py" script, you find a simple Python class which allows to:
 - parse the Excel files containing the scores of each country in each of the adopted indices (in the "indices" folder)
-- rename all the countries names according to a specific criteria (adopting the [country_converter library](https://github.com/IndEcol/country_converter))
+- rename all the countries names according to a specific criteria, adopting the [country_converter library](https://github.com/IndEcol/country_converter)
 - calculate the average (possibly as arithmetic and geometric) of the indices scores by country (indicator 'g') and the like-mindedness indicator (LMI) given a reference country/region
 - add new indicators for each country (in this case data about gas production, reserves, exports, marginal export capacity and others); raw data are provided within the "additional_data" folder
 
