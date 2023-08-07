@@ -10,4 +10,6 @@ In the "LMI_class.py" script, you find a simple Python class which allows to:
 - calculate the average (possibly as arithmetic and geometric) of the indices scores by country (indicator 'g') and the like-mindedness indicator (LMI) given a reference country/region
 - add new indicators for each country (in this case data about gas production, reserves, exports, marginal export capacity and others); raw data are provided within the "additional_data" folder
 
-Additionally, the script allows to plot Figure 2 in html (annotations have been added separately). Figure 1 and 3 are provided in Excel format. Figures are contained in the "plots" folder
+Additionally, the script allows to plot Figure 2 in html (the annotations provided in the paper's version have been added separately). For better visualization, install the font we used from this [link](https://fontsgeek.com/fonts/helveticaneue-light).
+
+Figure 1 and 3 are provided in Excel format. Figures are contained in the "plots" folder
