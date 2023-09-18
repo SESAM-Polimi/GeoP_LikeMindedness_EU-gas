@@ -1,4 +1,4 @@
-# Assess Like-Mindedness among 2 countries/regions
+# Assess Like-Mindedness among two countries/regions
 
 ### Application to EU potential gas suppliers.
 
