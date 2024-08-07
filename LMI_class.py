@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#%% -*- coding: utf-8 -*-
 """
 Created on Sun Jul 16 16:42:26 2023
 
@@ -141,9 +141,9 @@ class LMI():
 #%%
 geop_LMI = LMI()
 
-indices = ['CPI 2022','EPI 2022','GDI 2022','WPFI 2020','HFI 2022']
+indices = ['CPI 2023','EPI 2023','GDI 2023','WPFI 2020','HFI 2023']
 for i in indices:
-    geop_LMI.read_indices(path=f"indices\{i}.xlsx",name=i)
+    geop_LMI.read_indices(path=f"/Users/lorenzorinaldi/Documents/GitHub/SESAM/GeoP_LikeMindedness_EU-gas/indices/{i}.xlsx",name=i)
     geop_LMI.rename_countries(method='ISO3')
 all_countries = geop_LMI.all_countries(save=True)
 
@@ -154,7 +154,7 @@ geop_LMI.add_region('EU27')
 geop_LMI.calc_LMI('EU27')
 
 # geop_LMI.add_indicators_template(r"additional_data\gas_data.xlsx",sheet_name='gas_data')
-geop_LMI.get_add_indicators(r"additional_data\gas_data.xlsx",sheet_name='gas_data')
+geop_LMI.get_add_indicators(r"additional_data/gas_data.xlsx",sheet_name='gas_data')
 
 
 #%% defining other countries clusters
@@ -249,15 +249,17 @@ boxplot = px.box(
     )
 boxplot.update_layout(
     font_size=16, 
-    font_family='HelveticaNeue Light',
+    font_family='Helvetica',
 )
 boxplot.update_yaxes(title='')
 boxplot.update_xaxes(title='g',)
     
-boxplot.write_html(r"plots\Figure 2.html",auto_open=True)
+boxplot.write_html(r"plots/Figure 2.html",auto_open=True)
 
 
 
 
 
 
+
+# %%
